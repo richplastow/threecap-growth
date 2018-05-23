@@ -17,6 +17,8 @@ const tweenDefs = [
       , onReset:    function (def) {
             for (let i=0; i<scene.sprites.length; i++)
                 scene.sprites[i].visible = false
+            window.updateFirstText('')
+            scene.firstTextSpriteMaterial.map.needsUpdate = true
             state.cameraCurrent.position.lat = 52
             state.cameraCurrent.position.lon = -20
             state.cameraCurrent.position.alt = 250

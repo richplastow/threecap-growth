@@ -14,4 +14,6 @@ let module; export default module = {
           , alt: 0
         }
     }
+  , firstText: null
+  , secondText: null
 }

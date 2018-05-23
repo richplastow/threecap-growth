@@ -23,6 +23,16 @@ const
   , earthGeometry = new THREE.SphereGeometry(99, 128, 128)
   // , cloudGeometry = new THREE.SphereGeometry(100, 64, 64)
   // , starGeometry  = new THREE.SphereGeometry(500, 12, 12)
+  // , firstTextGeometry = new THREE.TextGeometry('1950', {
+	// 	font: font,
+	// 	size: 80,
+	// 	height: 5,
+	// 	curveSegments: 12,
+	// 	bevelEnabled: true,
+	// 	bevelThickness: 10,
+	// 	bevelSize: 8,
+	// 	bevelSegments: 5
+	// })
   , sprites = []
 
     //// Lights.
@@ -46,9 +56,9 @@ const
   , usualSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('usual-sprite')
     )
-  // , top100SpriteTexture = new THREE.CanvasTexture(
-  //       document.getElementById('top100-sprite')
-  //   )
+  , firstTextSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('first-text-sprite')
+    )
 
     //// Materials.
   // , atmosMaterial = THREEx.createAtmosphereMaterial()
@@ -88,6 +98,17 @@ const
   , usualSpriteMaterial = new THREE.SpriteMaterial(
         Object.assign({}, spriteMaterialTemplate)
     )
+  , firstTextSpriteMaterial = new THREE.SpriteMaterial({
+        map: firstTextSpriteTexture
+      , blending: THREE.AdditiveBlending
+      , depthTest: true
+      , transparent: true
+      , opacity: config.usualSpriteOpacityBeginEnd
+      , fog: false
+    })
+
+    //// Sprites.
+  , firstTextSprite = new THREE.Sprite(firstTextSpriteMaterial)
 
     //// Meshes.
   // , atmosMesh = new THREE.Mesh(atmosGeometry, atmosMaterial)
@@ -122,6 +143,7 @@ let module; export default module = {
   , captureui
 
   , usualSpriteMaterial
+  , firstTextSpriteMaterial
   , sprites
 
     //// Sets up the scene - should be called only once.
@@ -162,6 +184,11 @@ let module; export default module = {
         // scene.add(starMesh)
         document.body.appendChild(renderer.domElement)
 
+        //// Add text sprites.
+        firstTextSprite.position.set(110, -50, -39)
+        firstTextSprite.scale.set(100, 100, 100)
+        scene.add(firstTextSprite)
+
         ////
         for (let i=0; i<44; i++) {
             const
@@ -171,6 +198,7 @@ let module; export default module = {
             sprite.position.set(110, y, z)
             sprite.scale.set(6, 6, 6)
             sprite.showAtFraction = i * 0.005 + 0.2
+            sprite.year = 1950 + i
             sprite.visible = false
             sprites.push(sprite)
             scene.add(sprite)
@@ -187,11 +215,17 @@ let module; export default module = {
         else
             state.prevNow = ~~now // a new second!
 
+        //// Show dots at the correct moment and update the year-text.
         const nowFraction = now / state.currDuration * 1000
         for (let i=0; i<sprites.length; i++) {
             const sprite = sprites[i]
             if (nowFraction > sprite.showAtFraction && ! sprite.visible) {
                 sprite.visible = true
+                if (state.firstText !== sprite.year) {
+                    state.firstText = sprite.year
+                    window.updateFirstText(sprite.year)
+                    firstTextSpriteMaterial.map.needsUpdate = true
+                }
             }
         }
 

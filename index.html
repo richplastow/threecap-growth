@@ -73,6 +73,19 @@
   ctx.fill()
   }()</script>
 
+  <!-- Draw the first text sprite -->
+  <canvas id="first-text-sprite" width="512" height="512"></canvas>
+  <script>!function(){
+  const ctx = document.getElementById('first-text-sprite').getContext('2d')
+  ctx.fillStyle = '#ffffff'
+  ctx.font = '150px museo_sans500'
+  window.updateFirstText = function (text) {
+      ctx.clearRect(0,0,512,512)
+      ctx.fillText(text, 50, 150)
+  }
+
+}()</script>
+
 </div>
 
 
