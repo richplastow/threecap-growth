@@ -14,8 +14,8 @@ const
   , renderer = new THREE.WebGLRenderer({ antialias:true })
   , composer = new THREE.EffectComposer(renderer)
   , copyPass = new THREE.ShaderPass(THREE.CopyShader)
-  , outlinePass = new THREE.OutlinePass(
-        new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
+  // , outlinePass = new THREE.OutlinePass(
+  //       new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
 
     //// Object3Ds.
   // , globe = new THREE.Object3D() // dot-sprites are attached to this
@@ -24,16 +24,6 @@ const
   // , cloudGeometry = new THREE.SphereGeometry(100, 64, 64)
   // , starGeometry  = new THREE.SphereGeometry(500, 12, 12)
   , sprites = []
-  // , top3Sprites = []
-  // , top7Sprites = []
-  // , top20Sprites = []
-  // , arabianSprites = []
-  // , indianSprites = []
-  // , asianSprites = []
-  // , americanSprites = []
-  // , top100Sprites = []
-  // , specialSprites = []
-  // , specialSpriteMaterials = []
 
     //// Lights.
   , ambientLight = new THREE.AmbientLight(0xaaaab0)
@@ -88,7 +78,7 @@ const
       , depthTest: true
       , transparent: true
       , opacity: config.usualSpriteOpacityBeginEnd
-      , fog: true
+      , fog: false
 
       //// Always in front
       // , depthWrite: false
@@ -98,76 +88,6 @@ const
   , usualSpriteMaterial = new THREE.SpriteMaterial(
         Object.assign({}, spriteMaterialTemplate)
     )
-  // , top100SpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , top3SpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , top7SpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , top20SpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , arabianSpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , indianSpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , asianSpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , americanSpriteMaterial = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , xx = specialSpriteMaterials[1] = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
-  // , xxx = specialSpriteMaterials[2] = new THREE.SpriteMaterial(
-  //       Object.assign({}, spriteMaterialTemplate, {
-  //           fog: false
-  //         , map: top100SpriteTexture
-  //         , opacity: config.top100SpriteOpacityBeginEnd
-  //       })
-  //   )
 
     //// Meshes.
   // , atmosMesh = new THREE.Mesh(atmosGeometry, atmosMaterial)
@@ -202,26 +122,7 @@ let module; export default module = {
   , captureui
 
   , usualSpriteMaterial
-  // , top3SpriteMaterial
-  // , top7SpriteMaterial
-  // , top20SpriteMaterial
-  // , arabianSpriteMaterial
-  // , indianSpriteMaterial
-  // , asianSpriteMaterial
-  // , americanSpriteMaterial
-  //
-  // , top100SpriteMaterial
-  // , specialSpriteMaterials
-  //
-  // , top3Sprites
-  // , top7Sprites
-  // , top20Sprites
-  // , arabianSprites
-  // , indianSprites
-  // , asianSprites
-  // , americanSprites
-  // , top100Sprites
-  // , specialSprites
+  , sprites
 
     //// Sets up the scene - should be called only once.
   , init () {
@@ -233,25 +134,19 @@ let module; export default module = {
         renderer.shadowMap.enabled = true
         renderer.shadowMap.type = THREE.PCFSoftShadowMap // default THREE.PCFShadowMap
     	composer.addPass( new THREE.RenderPass(scene, camera) )
-        outlinePass.selectedObjects = [earthMesh]
-        outlinePass.edgeStrength = 1.0 // default is 3.0
-        outlinePass.edgeGlow = 40 // default is 0.0
-        outlinePass.edgeThickness = 5.0 // default is 1.0
-        outlinePass.downSampleRatio = 1 // default is 2
-        // outlinePass.usePatternTexture = false
-        outlinePass.visibleEdgeColor.set('#208099')
-        outlinePass.hiddenEdgeColor.set('#102099')
-        composer.addPass(outlinePass)
+        // outlinePass.selectedObjects = [earthMesh]
+        // outlinePass.edgeStrength = 1.0 // default is 3.0
+        // outlinePass.edgeGlow = 40 // default is 0.0
+        // outlinePass.edgeThickness = 5.0 // default is 1.0
+        // outlinePass.downSampleRatio = 1 // default is 2
+        // outlinePass.visibleEdgeColor.set('#208099')
+        // outlinePass.hiddenEdgeColor.set('#102099')
+        // composer.addPass(outlinePass)
     	// composer.addPass(rgbShiftPass)
     	composer.addPass(copyPass)
         scene.add(camera)
         scene.add(ambientLight)
     	directionalLight.position.set(-200,300,500)
-    	// directionalLight.castShadow = true
-        // directionalLight.shadow.mapSize.width = 512  // default is 512
-        // directionalLight.shadow.mapSize.height = 512 // default is 512
-        // directionalLight.shadow.camera.near = 0.5    // default is 0.5
-        // directionalLight.shadow.camera.far = 500     // default is 500
         // earthMesh.receiveShadow = true
         // earthMaterial.shading = THREE.SmoothShading
         // atmosMaterial.uniforms.glowColor.value.set(0x00b3ff)
@@ -267,6 +162,20 @@ let module; export default module = {
         // scene.add(starMesh)
         document.body.appendChild(renderer.domElement)
 
+        ////
+        for (let i=0; i<44; i++) {
+            const
+                sprite = new THREE.Sprite(usualSpriteMaterial)
+              , y = ~~(i / 10) * 7
+              , z = (i % 10) * -7
+            sprite.position.set(110, y, z)
+            sprite.scale.set(6, 6, 6)
+            sprite.showAtFraction = i * 0.005 + 0.2
+            sprite.visible = false
+            sprites.push(sprite)
+            scene.add(sprite)
+        }
+
     }
 
   , render () {
@@ -277,6 +186,15 @@ let module; export default module = {
             if ('capture' === state.currMode) return // only render once a second
         else
             state.prevNow = ~~now // a new second!
+
+        const nowFraction = now / state.currDuration * 1000
+        for (let i=0; i<sprites.length; i++) {
+            const sprite = sprites[i]
+            if (nowFraction > sprite.showAtFraction && ! sprite.visible) {
+                sprite.visible = true
+            }
+        }
+
         TWEEN.update(now * 1000) // convert seconds to ms
     	renderer.clear()
     	composer.render()

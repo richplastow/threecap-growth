@@ -7,14 +7,16 @@ import state from './state.js'
 const tweenDefs = [
 
     { // camera position’s altitude
-        beginState: { alt:250 }
+        beginState: { alt:300 }
       , currState:  { }
-      , endState:   { alt:300 }
+      , endState:   { alt:350 }
       , beginFrac:  0
       , endFrac:    1
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) {
+            for (let i=0; i<scene.sprites.length; i++)
+                scene.sprites[i].visible = false
             state.cameraCurrent.position.lat = 52
             state.cameraCurrent.position.lon = -20
             state.cameraCurrent.position.alt = 250
@@ -32,9 +34,9 @@ const tweenDefs = [
     }
 
   , { // camera position’s latitude and longitude BEGIN
-        beginState: { lat:52, lon:-20 }
+        beginState: { lat:0, lon:0 }
       , currState:  {}
-      , endState:   { lat:58, lon:10 }
+      , endState:   { lat:0, lon:0 }
       , beginFrac:  0.0 // fraction of whole duration, so `0`...
       , endFrac:    1 // ...`1` fills the entire sequence
       , tween:      null

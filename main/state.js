@@ -6,7 +6,7 @@ let module; export default module = {
     prevNow: null
   , currMode: null // `null` to init, 'preview' or 'capture' after that
   , currFps: config.fps
-  , currDuration: config.duration
+  , currDuration: config.previewDuration
   , cameraCurrent: {
         position: {
             lat: 0
