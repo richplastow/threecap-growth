@@ -185,19 +185,33 @@ let module; export default module = {
         document.body.appendChild(renderer.domElement)
 
         //// Add text sprites.
-        firstTextSprite.position.set(110, -50, -39)
+        firstTextSprite.position.set(110, -70, -7)
         firstTextSprite.scale.set(100, 100, 100)
         scene.add(firstTextSprite)
 
         ////
-        for (let i=0; i<44; i++) {
-            const
-                sprite = new THREE.Sprite(usualSpriteMaterial)
-              , y = ~~(i / 10) * 7
-              , z = (i % 10) * -7
-            sprite.position.set(110, y, z)
+        for (let i=0; i<400; i++) {
+            let y, z, sprite = new THREE.Sprite(usualSpriteMaterial)
+
+            //// `i` up to 100
+            if (100 > i) {
+                z = (i % 10) * -7 // effectively x
+                y = ~~(i / 10) * 7
+
+            //// Odd `i`, greater than 100
+            } else if (i % 2) {
+                z = ~~(i / 20) * 7 - 28
+                y = (i % 20) * 3.5 - 3.5
+
+            //// Even `i`, greater than 100
+            } else {
+                z = ~~(i / 20) * -7 - 35
+                y = (i % 20) * 3.5
+            }
+
+            sprite.position.set(110, y-20, z+32)
             sprite.scale.set(6, 6, 6)
-            sprite.showAtFraction = i * 0.005 + 0.2
+            sprite.showAtFraction = i * 0.001 + 0.1
             sprite.year = 1950 + i
             sprite.visible = false
             sprites.push(sprite)

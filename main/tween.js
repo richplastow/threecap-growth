@@ -9,7 +9,7 @@ const tweenDefs = [
     { // camera position’s altitude
         beginState: { alt:300 }
       , currState:  { }
-      , endState:   { alt:350 }
+      , endState:   { alt:400 } //350
       , beginFrac:  0
       , endFrac:    1
       , tween:      null
