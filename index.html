@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html lang="en-GB">
+<head>
+<!--
+
+1. META
+2. STYLE
+3. HEADER
+4. SPRITES
+5. SCRIPTS
+
+-->
+
+
+
+
+<!-- META -->
+
+<!-- Technical meta -->
+<base target="_blank">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,
+            shrink-to-fit=no, maximum-scale=1.0, user-scalable=no">
+
+<!-- Search engine meta -->
+<title>Threecap Growth</title>
+<meta name="description" content="Animation of the top 100 overtouristed cities,
+            with video-capturing by threecap">
+<link rel="author" href="README.md">
+
+
+
+
+<!-- STYLE -->
+
+<!-- Threecap and Scene styles -->
+<link rel="stylesheet" type="text/css" href="css/threecap-top100.css">
+<link rel="stylesheet" type="text/css" href="css/threecapui.css">
+
+</head>
+<body>
+
+
+
+
+<!-- HEADER -->
+
+<h1>Threecap Top 100</h1>
+<p>
+  Animation of the top 100 overtouristed cities, with video-capturing by
+  <a href="https://github.com/jbaicoianu/threecap">threecap</a> &nbsp; &nbsp;
+  <a href="https://github.com/richplastow/threecap-top100">Repo</a> &nbsp;
+  <a href="http://richplastow.com/threecap-top100/">Demo</a>
+</p>
+<button id="restart-preview">Restart Preview</button>
+<pre id="cli-help"></pre>
+
+
+
+
+<!-- SPRITES -->
+
+<div id="sprite-wrap">
+
+  <!-- Draw the sprite for ‘usual’ dots -->
+  <canvas id="usual-sprite" width="256" height="256"></canvas>
+  <script>!function(){
+  const ctx = document.getElementById('usual-sprite').getContext('2d')
+  ctx.fillStyle = 'rgb(0, 90, 83)'//'#00ff80'
+  ctx.beginPath()
+  ctx.arc(128, 128, 126, 0, Math.PI * 2) // x, y, r, start angle, end angle
+  ctx.fill()
+  }()</script>
+
+</div>
+
+
+
+
+<!-- SCRIPTS -->
+
+<!-- THREE.js -->
+<script src="lib/three.min.js"></script>
+
+<!-- THREE.js postprocessing -->
+<script src="lib/EffectComposer.js"></script>
+<script src="lib/ShaderPass.js"></script>
+<script src="lib/MaskPass.js"></script>
+<script src="lib/RenderPass.js"></script>
+
+<!-- THREE.js shaders -->
+<script src="lib/CopyShader.js"></script>
+<!-- <script src="lib/RGBShiftShader.js"></script> -->
+<script src="lib/OutlinePass.js"></script>
+
+<!-- Threecap -->
+<script src="lib/threecap/threecap.js"></script>
+
+<!-- TWEEN.js -->
+<script src="lib/tween.min.js"></script>
+
+<!-- Boot the App -->
+<script type="module">
+    import { boot } from './main/boot.js'
+    boot()
+</script>
+
+
+
+
+</body>
+</html>

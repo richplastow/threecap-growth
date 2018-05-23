@@ -1,0 +1,18 @@
+@font-face {
+font-family: 'museo_sans500';
+src: url('../font/MuseoSans_500-webfont.eot');
+src: url('../font/MuseoSans_500-webfont.eot?#iefix') format('embedded-opentype'),
+     url('../font/MuseoSans_500-webfont.woff2') format('woff2'),
+     url('../font/MuseoSans_500-webfont.woff') format('woff'),
+     url('../font/MuseoSans_500-webfont.ttf') format('truetype'),
+     url('../font/MuseoSans_500-webfont.svg#museo_sans500') format('svg');
+font-weight: normal;
+font-style: normal;
+}
+body { margin:0; background:silver; font-family:"museo_sans500" }
+#sprite-wrap { position:absolute; text-align:right; top:0; right:0 }
+#sprite-wrap canvas { width:64px; height:64px; display:inline-block }
+canvas#three-scene { width:854px; height:480px; } /* becomes 1920x1080 during capture */
+#recordpanel input { width:200px; }
+#recordpanel div { opacity:0; height:0 }
+#recordpanel div:last-of-type { position:relative; opacity:1; height:auto; z-index:999 }
