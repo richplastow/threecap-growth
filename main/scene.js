@@ -115,7 +115,7 @@ const
   , captureui = new THREEcapUI(capture)
 
 
-scene.fog = new THREE.Fog(0x002060, -200, 800) // RT: rgb(0, 90, 83)
+scene.fog = new THREE.Fog(0x002060, -100, 450) // RT: rgb(0, 90, 83)
 
 
 
@@ -172,8 +172,8 @@ let module; export default module = {
         document.body.appendChild(renderer.domElement)
 
         //// Add text sprites.
-        firstTextSprite.position.set(110, -70, -7)
-        firstTextSprite.scale.set(100, 100, 100)
+        firstTextSprite.position.set(110, -77, -5)
+        firstTextSprite.scale.set(50, 50, 50)
         scene.add(firstTextSprite)
 
         ////
@@ -205,8 +205,8 @@ let module; export default module = {
                     y = ~~(i / 50) * 7
                 }
 
-                sprite.position.set(110, y-20, z+32)
-                sprite.scale.set(6, 6, 6)
+                sprite.position.set(110, y/2-52, z/2+14.5)
+                sprite.scale.set(3, 3, 3)
                 if (1950 === year)
                     sprite.showAtFraction = 0
                 else if (2017 >= year)

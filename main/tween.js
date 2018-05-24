@@ -7,9 +7,9 @@ import state from './state.js'
 const tweenDefs = [
 
     { // camera position’s altitude
-        beginState: { alt:300 }
+        beginState: { alt:200 }//was 300
       , currState:  { }
-      , endState:   { alt:600 }
+      , endState:   { alt:350 }//was 600
       , beginFrac:  0.1
       , endFrac:    1
       , tween:      null
@@ -41,33 +41,10 @@ const tweenDefs = [
             state.cameraCurrent.position.alt = def.currState.alt
         } }
     }
-/*
-  , { // camera position’s latitude and longitude
-        beginState: { lat:0, lon:0 }
-      , currState:  {}
-      , endState:   { lat:0, lon:0 }
-      , beginFrac:  0.1 // fraction of whole duration, so `0`...
-      , endFrac:    1 // ...`1` fills the entire sequence
-      , tween:      null
-      , easing:     TWEEN.Easing.Cubic.InOut
-      , onReset:    function (def) { }
-      , onUpdate:   function (def) { return function () {
-            state.cameraCurrent.position.lat = def.currState.lat
-            state.cameraCurrent.position.lon = def.currState.lon
-            setPositionUsingLla(
-                scene.camera
-              , state.cameraCurrent.position.lat
-              , state.cameraCurrent.position.lon
-              , state.cameraCurrent.position.alt
-            )
-            scene.camera.lookAt(0,0,0)
-        } }
-    }
-*/
   , { // camera’s y-position
-        beginState: { y:0 }
+        beginState: { y:-45 }//was 0
       , currState:  {}
-      , endState:   { y:80 }
+      , endState:   { y:0 }//was 80
       , beginFrac:  0.1 // fraction of whole duration, so `0`...
       , endFrac:    1 // ...`1` fills the entire sequence
       , tween:      null

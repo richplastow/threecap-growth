@@ -13,7 +13,7 @@ const
   , captureFps = 1
   , captureDuration = previewDuration * (previewFps / captureFps)
 
-  , earthStartRotationY = -0.5
+  , earthStartRotationY = 0 //was 0.3
 
     //// Whether to render the animation during capture.
   , showDuringCapture = false
