@@ -6,12 +6,14 @@ const
     previewWidth = 854
   , previewHeight = 480
   , previewFps = 25
-  , previewDuration = 8000 // in ms
+  , previewDuration = 16000 // in ms
 
   , captureWidth = 1920
   , captureHeight = 1080
   , captureFps = 1
   , captureDuration = previewDuration * (previewFps / captureFps)
+
+  , earthStartRotationY = -0.5
 
     //// Whether to render the animation during capture.
   , showDuringCapture = false
@@ -32,6 +34,8 @@ let module; export default module = {
   , captureFps
   , captureDuration
   , pixelRatio: window.devicePixelRatio || 0
+
+  , earthStartRotationY
 
     //// Whether to render the animation during capture.
   , showDuringCapture

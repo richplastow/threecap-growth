@@ -1,114 +1,82 @@
 const
     fs = require('fs')
-  , csv1 = (''+fs.readFileSync('simplemaps-worldcities-basic.csv')).split('\n').slice(1)
-  , csv2 = (''+fs.readFileSync('travelbird-most-welcoming-cities.csv')).split('\n').slice(1)
+  , csv = ( ''+fs.readFileSync('international-tourist-arrivals-by-world-region.csv') )
+       .split('\n').slice(1) // convert to array and ditch the first line
+  , data = {
+        Africa: []
+      , Americas: []
+      , 'Asia & Pacific': []
+      , Europe: []
+      , 'Middle East': []
+      , total: []
+    }
   , es6 = [
         '//// DATA'
       , ''
       , 'let data; export default data = ['
-      , "    [ 'pop', 'city', 'x', 'y', 'z', 'lat', 'lon', 'overtourism' ]"
+      , "    [ 'year', 'arrivals (millions)', 'delta (millions)' ]"
     ]
 
-    //// By city name, eg `{ London:7.06, ...}`
-  , overtourismScores = {}
-
-    //// In `pop` order eg `{ GBR:[ ['London', ...],['Birmingham', ...] ], ...}`
-  , citiesBySize = {}
-
-let
-    totalOvertourismScore = 0 // used to find the average
-  , averageOvertourismScore
-
-//// Parse the overtourism scores of cities listed in
-//// https://travelbird.nl/most-welcoming-cities/
-for (let i=0; i<csv2.length; i++) {
-    const line = csv2[i].split(',')
+//// Parse the CSV file.
+for (let i=0; i<csv.length; i++) {
+    const line = csv[i].split(',')
     if (1 === line.length) continue // eg newline at end of csv file
-    let [ welcomingrank, city_ascii, country, expert, port, safety, happiness, english
-        , openness, overtourism, welcomingscore ] = line
-    overtourism = 10 - overtourism // make Venice and Barcelona high scoring
-    overtourismScores[city_ascii] = { overtourism, country }
-    totalOvertourismScore += overtourism
+    const [ region, code, year, arrivals ] = line
+    data[region][year] = +arrivals
 }
-averageOvertourismScore = totalOvertourismScore / 100
 
-
-//// Build `citiesBySize`, sorting each city by population, keeping the biggest.
-for (let i=0; i<csv1.length; i++) {
-    const line = csv1[i].split(',')
-    if (1 === line.length) continue // eg newline at end of csv file
-    let [ city, city_ascii, lat, lon, pop, country, iso2, iso3 ] = line
-    // if (10000 > pop) continue // ignore smaller cities
-    iso3 = 'United States of America' === iso3 ? 'USA' : iso3 // simplemaps error
-    citiesBySize[iso3] = citiesBySize[iso3] || []
-    const { x, y, z } = latLonToXYZ(lat, lon, 100.5)
-    let overtourism = 0
-    if (overtourismScores[city_ascii] && overtourismScores[city_ascii].country === country) {
-        if (averageOvertourismScore < overtourismScores[city_ascii].overtourism)
-            overtourism = overtourismScores[city_ascii].overtourism - averageOvertourismScore
-        delete overtourismScores[city_ascii]
+//// Fill in missing years.
+function fillGaps (region) {
+    for (let year=0, prev, run=1, num; year<region.length; year++) {
+        const arrivals = region[year]
+        if (! arrivals && ! prev) continue // not reached the first data point yet
+        if (arrivals) {
+            prev = arrivals
+            run = 1
+            if ( 'number' === typeof region[year-1] ) continue
+            if (! region[year-1]) continue
+            num = region[year-1][0] + 1
+            for (let i=year-1; i>0; i--) {
+                const item = region[i]
+                if ('number' === typeof item) break
+                const itemRun = item[0]
+                const itemArrivals = item[1]
+                region[i] = itemArrivals + ~~(itemRun * (arrivals - itemArrivals) / num)
+            }
+        } else {
+            region[year] = [run++, prev]
+        }
     }
-    citiesBySize[iso3].push([
-        pop, city, x, y, z, lat, lon, overtourism
-    ])
 }
-for (let iso3 in citiesBySize) {
-    citiesBySize[iso3].sort( (a, b) => b[0] - a[0] ) // `[0]` is population
-    // const biggestNum = Math.max(100, citiesBySize[iso3].length * 0.5)
-    // citiesBySize[iso3] = citiesBySize[iso3].slice(0, biggestNum)
+fillGaps(data.Africa)
+fillGaps(data.Americas)
+fillGaps(data['Asia & Pacific'])
+fillGaps(data.Europe)
+fillGaps(data['Middle East'])
+
+//// Add up the regions.
+for (let i=0; i<data.Africa.length; i++) {
+    const item = data.Africa[i]
+    if (! item) continue
+    data.total[i] =
+        data.Africa[i]
+      + data.Americas[i]
+      + data['Asia & Pacific'][i]
+      + data.Europe[i]
+      + data['Middle East'][i]
+    data.total[i] = Math.round(data.total[i] / 1000000)
 }
 
 
 //// Build the output `es6` module.
-for (let iso3 in citiesBySize) {
-    es6.push(`// ${iso3}`)
-    for (let i=0; i<citiesBySize[iso3].length; i++) {
-        const [ pop, city, x, y, z, lat, lon, overtourism ] = citiesBySize[iso3][i]
-        // if (1000000 > pop) continue // ignore smaller cities
-        // let overtourism = ~~(Math.random()*1000)
-        // overtourism = 100 < overtourism ? 0 : overtourism
-        es6.push(
-            `  , [ ${pop}, '${city.replace(/'/g,'’')}'`
-          + `, ${x},${y},${z}, ${lat},${lon}, ${overtourism} ]`
-        )
-    }
+let prev = 0
+for (let year in data.total) {
+    const arrivals = data.total[year]
+    if (! arrivals) continue
+    const delta = arrivals - prev
+    prev = arrivals
+    es6.push(`  , [ ${year}, ${arrivals}, ${delta} ]`)
 }
 
 es6.push(']')
-fs.writeFileSync( 'worldcities.js', es6.join('\n') )
-
-
-
-
-//// UTILITY
-
-function latLonToXYZ (lat, lon, rad) {
-    // lat = Math.PI / 2 - lat // Flip the Y axis
-    const cosLat = Math.cos(lat * Math.PI / 180)
-    const sinLat = Math.sin(lat * Math.PI / 180)
-    const cosLon = Math.cos(lon * Math.PI / 180)
-    const sinLon = Math.sin(lon * Math.PI / 180)
-    const x = rad * cosLat * cosLon
-    const y = rad * cosLat * sinLon
-    const z = rad * sinLat
-    return {
-        x: x
-      , y: z   // for correct THREE.js coords, swap y with z...
-      , z: - y // ...and z with -y
-    }
-
-    // //// Flip the Y axis.
-    // lat = Math.PI / 2 - lat
-    //
-    // //// Distribute to sphere.
-    // return {
-    //     x: rad * Math.sin(lat) * Math.sin(lon)
-    //   , y: rad * Math.cos(lat)
-    //   , z: rad * Math.sin(lat) * Math.cos(lon)
-    // }
-    // return {
-    //     x: rad * Math.cos(lat) * Math.cos(lon)
-    //   , y: rad * Math.cos(lat) * Math.sin(lon)
-    //   , z: rad * Math.sin(lat)
-    // }
-}
+fs.writeFileSync( 'total-international-tourist-arrivals.js', es6.join('\n') )

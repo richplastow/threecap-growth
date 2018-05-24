@@ -1,7 +1,7 @@
 //// SCENE
 
 import config from  './config.js'
-import data from '../data/worldcities.js'
+import data from '../data/total-international-tourist-arrivals.js'
 import state from  './state.js'
 
 const
@@ -14,25 +14,14 @@ const
   , renderer = new THREE.WebGLRenderer({ antialias:true })
   , composer = new THREE.EffectComposer(renderer)
   , copyPass = new THREE.ShaderPass(THREE.CopyShader)
-  // , outlinePass = new THREE.OutlinePass(
-  //       new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
+  , outlinePass = new THREE.OutlinePass(
+        new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
 
     //// Object3Ds.
   // , globe = new THREE.Object3D() // dot-sprites are attached to this
-  // , atmosGeometry = new THREE.SphereGeometry(99.5, 64, 64)
   , earthGeometry = new THREE.SphereGeometry(99, 128, 128)
-  // , cloudGeometry = new THREE.SphereGeometry(100, 64, 64)
-  // , starGeometry  = new THREE.SphereGeometry(500, 12, 12)
-  // , firstTextGeometry = new THREE.TextGeometry('1950', {
-	// 	font: font,
-	// 	size: 80,
-	// 	height: 5,
-	// 	curveSegments: 12,
-	// 	bevelEnabled: true,
-	// 	bevelThickness: 10,
-	// 	bevelSize: 8,
-	// 	bevelSegments: 5
-	// })
+  , cloudGeometry = new THREE.SphereGeometry(100, 64, 64)
+  , starGeometry  = new THREE.SphereGeometry(500, 12, 12)
   , sprites = []
 
     //// Lights.
@@ -41,17 +30,17 @@ const
 
     //// Textures - for fast development:
   , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
-  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
-  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
-  // , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
-  // , starMap = THREE.ImageUtils.loadTexture('images/512_stars_milky_way.jpg')
+  , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
+  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
+  , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
+  , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
 
     //// Textures - for final render with a fast GPU:
-  // , earthMap = THREE.ImageUtils.loadTexture('images/4096_earth_daymap.jpg')
-  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/2048_earth_normal_map.png')
-  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/2048_earth_specular_map.png')
-  // , cloudMap = THREE.ImageUtils.loadTexture('images/4096_earth_clouds.jpg')
-  // , starMap = THREE.ImageUtils.loadTexture('images/2048_stars_milky_way.jpg')
+  // , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
+  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
+  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
+  // , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
+  // , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
 
   , usualSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('usual-sprite')
@@ -61,27 +50,25 @@ const
     )
 
     //// Materials.
-  // , atmosMaterial = THREEx.createAtmosphereMaterial()
   , earthMaterial = new THREE.MeshPhongMaterial({
         map: earthMap
-      // , bumpMap: earthBumpMap
-      // , bumpScale: 10
-      // , specularMap: earthSpecularMap
-      // , specular: new THREE.Color('grey')
+      , bumpMap: earthBumpMap
+      , bumpScale: 10
+      , specularMap: earthSpecularMap
+      , specular: new THREE.Color('grey')
     })
-  // , cloudMaterial = new THREE.MeshPhongMaterial({
-  //       map: cloudMap
-  //     , side: THREE.DoubleSide
-  //     , opacity: 1.0
-  //     , blending: THREE.AdditiveBlending
-  //     , transparent: true
-  //     , 1e20: false
-  //   })
-  // , starMaterial = new THREE.MeshBasicMaterial({
-  //       map: starMap
-  //     , side: THREE.BackSide
-  //     , fog: false
-  //   })
+  , cloudMaterial = new THREE.MeshPhongMaterial({
+        map: cloudMap
+      , side: THREE.DoubleSide
+      , opacity: 1.0
+      , blending: THREE.AdditiveBlending
+      , transparent: true
+    })
+  , starMaterial = new THREE.MeshBasicMaterial({
+        map: starMap
+      , side: THREE.BackSide
+      , fog: false
+    })
   , spriteMaterialTemplate = {
         map: usualSpriteTexture
       , blending: THREE.AdditiveBlending
@@ -111,10 +98,9 @@ const
   , firstTextSprite = new THREE.Sprite(firstTextSpriteMaterial)
 
     //// Meshes.
-  // , atmosMesh = new THREE.Mesh(atmosGeometry, atmosMaterial)
   , earthMesh = new THREE.Mesh(earthGeometry, earthMaterial)
-  // , cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial)
-  // , starMesh = new THREE.Mesh(starGeometry, starMaterial)
+  , cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial)
+  , starMesh = new THREE.Mesh(starGeometry, starMaterial)
 
     //// Capture.
   , capture = new THREEcap({
@@ -129,7 +115,7 @@ const
   , captureui = new THREEcapUI(capture)
 
 
-scene.fog = new THREE.FogExp2(0x002060, 0.004) // RT: rgb(0, 90, 83)
+scene.fog = new THREE.Fog(0x002060, -200, 800) // RT: rgb(0, 90, 83)
 
 
 
@@ -145,6 +131,8 @@ let module; export default module = {
   , usualSpriteMaterial
   , firstTextSpriteMaterial
   , sprites
+  , earthMesh
+  , cloudMesh
 
     //// Sets up the scene - should be called only once.
   , init () {
@@ -156,14 +144,14 @@ let module; export default module = {
         renderer.shadowMap.enabled = true
         renderer.shadowMap.type = THREE.PCFSoftShadowMap // default THREE.PCFShadowMap
     	composer.addPass( new THREE.RenderPass(scene, camera) )
-        // outlinePass.selectedObjects = [earthMesh]
-        // outlinePass.edgeStrength = 1.0 // default is 3.0
-        // outlinePass.edgeGlow = 40 // default is 0.0
-        // outlinePass.edgeThickness = 5.0 // default is 1.0
-        // outlinePass.downSampleRatio = 1 // default is 2
-        // outlinePass.visibleEdgeColor.set('#208099')
-        // outlinePass.hiddenEdgeColor.set('#102099')
-        // composer.addPass(outlinePass)
+        outlinePass.selectedObjects = [earthMesh]
+        outlinePass.edgeStrength = 0.5 // default is 3.0
+        outlinePass.edgeGlow = 40 // default is 0.0
+        outlinePass.edgeThickness = 5.0 // default is 1.0
+        outlinePass.downSampleRatio = 1 // default is 2
+        outlinePass.visibleEdgeColor.set('#104044')
+        outlinePass.hiddenEdgeColor.set('#081044')
+        composer.addPass(outlinePass)
     	// composer.addPass(rgbShiftPass)
     	composer.addPass(copyPass)
         scene.add(camera)
@@ -171,17 +159,16 @@ let module; export default module = {
     	directionalLight.position.set(-200,300,500)
         // earthMesh.receiveShadow = true
         // earthMaterial.shading = THREE.SmoothShading
-        // atmosMaterial.uniforms.glowColor.value.set(0x00b3ff)
-        // atmosMaterial.uniforms.coeficient.value	= 0.8
-        // atmosMaterial.uniforms.power.value = 2.0
-        // atmosMesh.scale.multiplyScalar(1.01)
         // earthMesh.renderDepth = 1e20
+        earthMesh.rotation.z = -0.4
+        cloudMesh.rotation.z = -0.4
+        earthMesh.rotation.y = config.earthStartRotationY
+        cloudMesh.rotation.y = config.earthStartRotationY
     	scene.add(directionalLight)
         // scene.add(globe)
-        // scene.add(atmosMesh)
         scene.add(earthMesh)
-        // scene.add(cloudMesh)
-        // scene.add(starMesh)
+        scene.add(cloudMesh)
+        scene.add(starMesh)
         document.body.appendChild(renderer.domElement)
 
         //// Add text sprites.
@@ -190,34 +177,63 @@ let module; export default module = {
         scene.add(firstTextSprite)
 
         ////
-        for (let i=0; i<400; i++) {
-            let y, z, sprite = new THREE.Sprite(usualSpriteMaterial)
+        let i = 0 // `i` is the ‘million-icon’ index
+        for (const yearIndex in data) {
+            const [ year, , delta ] = data[yearIndex]
 
-            //// `i` up to 100
-            if (100 > i) {
-                z = (i % 10) * -7 // effectively x
-                y = ~~(i / 10) * 7
+            for (let j=0; j<delta; j++) {
+                let y, z, sprite = new THREE.Sprite(usualSpriteMaterial)
 
-            //// Odd `i`, greater than 100
-            } else if (i % 2) {
-                z = ~~(i / 20) * 7 - 28
-                y = (i % 20) * 3.5 - 3.5
+                //// `i` up to 100
+                if (100 > i) {
+                    z = (i % 10) * -7 // effectively x
+                    y = ~~(i / 10) * 7
 
-            //// Even `i`, greater than 100
-            } else {
-                z = ~~(i / 20) * -7 - 35
-                y = (i % 20) * 3.5
+                //// Odd `i`, up to 500, greater than 100
+                } else if (500 > i && i % 2) {
+                    z = ~~(i / 20) * 7 - 28
+                    y = (i % 20) * 3.5 - 3.5
+
+                //// Even `i`, up to 500, greater than 100
+                } else if (500 > i) {
+                    z = ~~(i / 20) * -7 - 35
+                    y = (i % 20) * 3.5
+
+                //// `i` greater than 500
+                } else {
+                    z = (i % 50) * -7 + 140
+                    y = ~~(i / 50) * 7
+                }
+
+                sprite.position.set(110, y-20, z+32)
+                sprite.scale.set(6, 6, 6)
+                if (1950 === year)
+                    sprite.showAtFraction = 0
+                else if (2017 >= year)
+                    sprite.showAtFraction =
+                        0.25 // pause for 25% of the duration
+                      + (yearIndex * 0.006) // when the year-text changes
+                      + (
+                            (0.006 / delta) // fraction of the year
+                          * j // each ‘million-icon’ appears one-by-one
+                        )
+                else
+                    sprite.showAtFraction =
+                        0.35 // pause a bit at 2017
+                      + (yearIndex * 0.006) // when the year-text changes
+                      + (
+                            (0.006 / delta) // fraction of the year
+                          * j // each ‘million-icon’ appears one-by-one
+                        )
+                sprite.year = year
+                sprite.visible = false
+                sprites.push(sprite)
+                scene.add(sprite)
+
+                //// Increment the ‘million-icon’ index
+                i++
             }
-
-            sprite.position.set(110, y-20, z+32)
-            sprite.scale.set(6, 6, 6)
-            sprite.showAtFraction = i * 0.001 + 0.1
-            sprite.year = 1950 + i
-            sprite.visible = false
-            sprites.push(sprite)
-            scene.add(sprite)
         }
-
     }
 
   , render () {
@@ -241,6 +257,12 @@ let module; export default module = {
                     firstTextSpriteMaterial.map.needsUpdate = true
                 }
             }
+        }
+
+        //// Rotate the Earth.
+        if (1 > nowFraction) {
+            earthMesh.rotation.y = config.earthStartRotationY + nowFraction
+            cloudMesh.rotation.y = config.earthStartRotationY + nowFraction
         }
 
         TWEEN.update(now * 1000) // convert seconds to ms

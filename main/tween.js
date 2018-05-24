@@ -9,8 +9,8 @@ const tweenDefs = [
     { // camera position’s altitude
         beginState: { alt:300 }
       , currState:  { }
-      , endState:   { alt:400 } //350
-      , beginFrac:  0
+      , endState:   { alt:600 }
+      , beginFrac:  0.1
       , endFrac:    1
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
@@ -19,27 +19,34 @@ const tweenDefs = [
                 scene.sprites[i].visible = false
             window.updateFirstText('')
             scene.firstTextSpriteMaterial.map.needsUpdate = true
-            state.cameraCurrent.position.lat = 52
-            state.cameraCurrent.position.lon = -20
-            state.cameraCurrent.position.alt = 250
+            scene.earthMesh.rotation.y = config.earthStartRotationY
+            scene.cloudMesh.rotation.y = config.earthStartRotationY
+            // state.cameraCurrent.position.lat = tweenDefs[1].beginState.lat
+            // state.cameraCurrent.position.lon = tweenDefs[1].beginState.lon
+            state.cameraCurrent.position.lat = 0
+            state.cameraCurrent.position.lon = 0
+            state.cameraCurrent.position.alt = tweenDefs[0].beginState.alt
+            const y = tweenDefs[1].beginState.y
+            state.cameraCurrent.position.y = y
             setPositionUsingLla(
                 scene.camera
               , state.cameraCurrent.position.lat
               , state.cameraCurrent.position.lon
               , state.cameraCurrent.position.alt
             )
-            scene.camera.lookAt(0,0,0)
+            scene.camera.position.y = y // ...and z with negative y
+            scene.camera.lookAt(0,y,0)
         }
       , onUpdate:   function (def) { return function () {
             state.cameraCurrent.position.alt = def.currState.alt
         } }
     }
-
-  , { // camera position’s latitude and longitude BEGIN
+/*
+  , { // camera position’s latitude and longitude
         beginState: { lat:0, lon:0 }
       , currState:  {}
       , endState:   { lat:0, lon:0 }
-      , beginFrac:  0.0 // fraction of whole duration, so `0`...
+      , beginFrac:  0.1 // fraction of whole duration, so `0`...
       , endFrac:    1 // ...`1` fills the entire sequence
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
@@ -56,6 +63,75 @@ const tweenDefs = [
             scene.camera.lookAt(0,0,0)
         } }
     }
+*/
+  , { // camera’s y-position
+        beginState: { y:0 }
+      , currState:  {}
+      , endState:   { y:80 }
+      , beginFrac:  0.1 // fraction of whole duration, so `0`...
+      , endFrac:    1 // ...`1` fills the entire sequence
+      , tween:      null
+      , easing:     TWEEN.Easing.Exponential.InOut
+      , onReset:    function (def) { }
+      , onUpdate:   function (def) { return function () {
+            const y = def.currState.y
+            state.cameraCurrent.position.y = y
+            setPositionUsingLla(
+                scene.camera
+              , state.cameraCurrent.position.lat
+              , state.cameraCurrent.position.lon
+              , state.cameraCurrent.position.alt
+            )
+            scene.camera.position.y = y // ...and z with negative y
+            scene.camera.lookAt(0,y,0)
+        } }
+    }
+  , { // first-text-sprite’s opacity
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.05 // fraction of whole duration, so `0`...
+      , endFrac:    0.15 // ...`1` fills the entire sequence
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.firstTextSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.firstTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // usual-sprite’s opacity
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.1 // fraction of whole duration, so `0`...
+      , endFrac:    0.2 // ...`1` fills the entire sequence
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.usualSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.usualSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+/*
+  , { // fog amount
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.98 // fraction of whole duration, so `0`...
+      , endFrac:    0.99 // ...`1` fills the entire sequence
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.usualSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+*/
 ]
 
 
