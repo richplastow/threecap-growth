@@ -48,7 +48,7 @@ const tweenDefs = [
       , beginFrac:  0.1 // fraction of whole duration, so `0`...
       , endFrac:    1 // ...`1` fills the entire sequence
       , tween:      null
-      , easing:     TWEEN.Easing.Exponential.InOut
+      , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) { }
       , onUpdate:   function (def) { return function () {
             const y = def.currState.y

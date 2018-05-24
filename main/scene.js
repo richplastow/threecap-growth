@@ -10,18 +10,18 @@ const
     clock = new THREE.Clock()
   , scene = new THREE.Scene()
   , camera = new THREE.PerspectiveCamera(
-        35, config.previewWidth/config.previewHeight, 0.1, 1000)
+        35, config.previewWidth/config.previewHeight, 0.1, 2200)
   , renderer = new THREE.WebGLRenderer({ antialias:true })
   , composer = new THREE.EffectComposer(renderer)
   , copyPass = new THREE.ShaderPass(THREE.CopyShader)
-  , outlinePass = new THREE.OutlinePass(
-        new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
+  // , outlinePass = new THREE.OutlinePass(
+  //       new THREE.Vector2(config.previewWidth, config.previewHeight), scene, camera)
 
     //// Object3Ds.
   // , globe = new THREE.Object3D() // dot-sprites are attached to this
   , earthGeometry = new THREE.SphereGeometry(99, 128, 128)
   , cloudGeometry = new THREE.SphereGeometry(100, 64, 64)
-  , starGeometry  = new THREE.SphereGeometry(500, 12, 12)
+  , starGeometry  = new THREE.SphereGeometry(2000, 32, 32)
   , sprites = []
 
     //// Lights.
@@ -29,18 +29,18 @@ const
   , directionalLight = new THREE.DirectionalLight(0xcccc99, 0.5)
 
     //// Textures - for fast development:
-  , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
-  , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
-  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
-  , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
-  , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
+  // , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
+  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
+  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
+  // , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
+  // , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
 
     //// Textures - for final render with a fast GPU:
-  // , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
-  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
-  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
-  // , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
-  // , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
+  , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
+  , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
+  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
+  , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
+  , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
 
   , usualSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('usual-sprite')
@@ -144,14 +144,14 @@ let module; export default module = {
         renderer.shadowMap.enabled = true
         renderer.shadowMap.type = THREE.PCFSoftShadowMap // default THREE.PCFShadowMap
     	composer.addPass( new THREE.RenderPass(scene, camera) )
-        outlinePass.selectedObjects = [earthMesh]
-        outlinePass.edgeStrength = 0.5 // default is 3.0
-        outlinePass.edgeGlow = 40 // default is 0.0
-        outlinePass.edgeThickness = 5.0 // default is 1.0
-        outlinePass.downSampleRatio = 1 // default is 2
-        outlinePass.visibleEdgeColor.set('#104044')
-        outlinePass.hiddenEdgeColor.set('#081044')
-        composer.addPass(outlinePass)
+        // outlinePass.selectedObjects = [earthMesh]
+        // outlinePass.edgeStrength = 0.5 // default is 3.0
+        // outlinePass.edgeGlow = 40 // default is 0.0
+        // outlinePass.edgeThickness = 5.0 // default is 1.0
+        // outlinePass.downSampleRatio = 1 // default is 2
+        // outlinePass.visibleEdgeColor.set('#104044')
+        // outlinePass.hiddenEdgeColor.set('#081044')
+        // composer.addPass(outlinePass)
     	// composer.addPass(rgbShiftPass)
     	composer.addPass(copyPass)
         scene.add(camera)
@@ -164,6 +164,7 @@ let module; export default module = {
         cloudMesh.rotation.z = -0.4
         earthMesh.rotation.y = config.earthStartRotationY
         cloudMesh.rotation.y = config.earthStartRotationY
+        starMesh.rotation.z = -1.5
     	scene.add(directionalLight)
         // scene.add(globe)
         scene.add(earthMesh)
