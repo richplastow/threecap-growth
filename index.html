@@ -63,11 +63,11 @@
 
 <div id="sprite-wrap">
 
-  <!-- Draw the sprite for ‘usual’ dots -->
-  <canvas id="usual-sprite" width="256" height="256"></canvas>
+  <!-- Draw the sprite for ‘suitcase’ icons -->
+  <canvas id="suitcase-sprite" width="256" height="256"></canvas>
   <script>!function(){
   const
-      ctx = document.getElementById('usual-sprite').getContext('2d')
+      ctx = document.getElementById('suitcase-sprite').getContext('2d')
     , q0 = 0
     , q1 = Math.PI * 0.5
     , q2 = Math.PI
@@ -88,6 +88,47 @@
   ctx.arc(154, 44, 16, q3, q0)
   ctx.lineTo(170, 70)
   ctx.stroke()
+  }()</script>
+
+  <!-- Draw the sprite for ‘plane’ icons -->
+  <canvas id="plane-sprite" width="256" height="256"></canvas>
+  <script>!function(){
+  const
+      ctx = document.getElementById('plane-sprite').getContext('2d')
+  ctx.strokeStyle = 'rgb(202,2,45)'
+  ctx.lineWidth = 40
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(30, 128)
+  ctx.lineTo(200, 128)
+  ctx.stroke()
+  // ctx.lineWidth = 30
+  // ctx.moveTo(90, 128-60)
+  // ctx.lineTo(150, 128-60)
+  // ctx.moveTo(90, 128+60)
+  // ctx.lineTo(150, 128+60)
+  // ctx.stroke()
+  ctx.fillStyle = 'rgb(202,2,45)'
+  ctx.beginPath()
+  let x = 75
+  ctx.moveTo(x+0,  128)
+  ctx.lineTo(x+40,  20)
+  ctx.lineTo(x+80,  20)
+  ctx.lineTo(x+60, 128)
+  ctx.moveTo(x+0,  128)
+  ctx.lineTo(x+40, 236)
+  ctx.lineTo(x+80, 236)
+  ctx.lineTo(x+60, 128)
+  x = 180
+  ctx.moveTo(x+0,  128)
+  ctx.lineTo(x+30,  70)
+  ctx.lineTo(x+60,  70)
+  ctx.lineTo(x+45, 128)
+  ctx.moveTo(x+0,  128)
+  ctx.lineTo(x+30, 186)
+  ctx.lineTo(x+60, 186)
+  ctx.lineTo(x+45, 128)
+  ctx.fill()
   }()</script>
 
   <!-- Draw the first text sprite -->

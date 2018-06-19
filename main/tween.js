@@ -10,8 +10,8 @@ const tweenDefs = [
         beginState: { alt:200 }//was 300
       , currState:  { }
       , endState:   { alt:350 }//was 600
-      , beginFrac:  0.1
-      , endFrac:    1
+      , beginFrac:  0.05
+      , endFrac:    0.5
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) {
@@ -45,8 +45,8 @@ const tweenDefs = [
         beginState: { y:-45 }//was 0
       , currState:  {}
       , endState:   { y:0 }//was 80
-      , beginFrac:  0.1 // fraction of whole duration, so `0`...
-      , endFrac:    1 // ...`1` fills the entire sequence
+      , beginFrac:  0.05 // fraction of whole duration, so `0`...
+      , endFrac:    0.5 // ...`1` fills the entire sequence
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) { }
@@ -67,8 +67,8 @@ const tweenDefs = [
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.05 // fraction of whole duration, so `0`...
-      , endFrac:    0.15 // ...`1` fills the entire sequence
+      , beginFrac:  0.025 // fraction of whole duration, so `0`...
+      , endFrac:    0.075 // ...`1` fills the entire sequence
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
@@ -78,37 +78,21 @@ const tweenDefs = [
             scene.firstTextSpriteMaterial.opacity = def.currState.opacity
         } }
     }
-  , { // usual-sprite’s opacity
+  , { // suitcase-sprite’s opacity
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.1 // fraction of whole duration, so `0`...
-      , endFrac:    0.2 // ...`1` fills the entire sequence
+      , beginFrac:  0.05 // fraction of whole duration, so `0`...
+      , endFrac:    0.1 // ...`1` fills the entire sequence
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
-            scene.usualSpriteMaterial.opacity = 0
+            scene.suitcaseSpriteMaterial.opacity = 0
         }
       , onUpdate:   function (def) { return function () {
-            scene.usualSpriteMaterial.opacity = def.currState.opacity
+            scene.suitcaseSpriteMaterial.opacity = def.currState.opacity
         } }
     }
-/*
-  , { // fog amount
-        beginState: { opacity:1 }
-      , currState:  {}
-      , endState:   { opacity:0 }
-      , beginFrac:  0.98 // fraction of whole duration, so `0`...
-      , endFrac:    0.99 // ...`1` fills the entire sequence
-      , tween:      null
-      , easing:     TWEEN.Easing.Cubic.Out
-      , onReset:    function (def) {
-        }
-      , onUpdate:   function (def) { return function () {
-            scene.usualSpriteMaterial.opacity = def.currState.opacity
-        } }
-    }
-*/
 ]
 
 

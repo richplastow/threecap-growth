@@ -6,7 +6,7 @@ const
     previewWidth = 854
   , previewHeight = 480
   , previewFps = 25
-  , previewDuration = 16000 // in ms
+  , previewDuration = 32000 // in ms
 
   , captureWidth = 1920
   , captureHeight = 1080

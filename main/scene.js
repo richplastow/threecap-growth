@@ -29,21 +29,21 @@ const
   , directionalLight = new THREE.DirectionalLight(0xcccc99, 0.5)
 
     //// Textures - for fast development:
-  // , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
-  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
-  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
-  // , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
-  // , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
+  , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
+  , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
+  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
+  , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
+  , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
 
     //// Textures - for final render with a fast GPU:
-  , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
-  , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
-  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
-  , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
-  , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
+  // , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
+  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
+  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
+  // , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
+  // , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
 
-  , usualSpriteTexture = new THREE.CanvasTexture(
-        document.getElementById('usual-sprite')
+  , suitcaseSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('suitcase-sprite')
     )
   , firstTextSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('first-text-sprite')
@@ -70,11 +70,11 @@ const
       , fog: false
     })
   , spriteMaterialTemplate = {
-        map: usualSpriteTexture
+        map: suitcaseSpriteTexture
       , blending: THREE.AdditiveBlending
       , depthTest: true
       , transparent: true
-      , opacity: config.usualSpriteOpacityBeginEnd
+      , opacity: config.suitcaseSpriteOpacityBeginEnd
       , fog: false
 
       //// Always in front
@@ -82,7 +82,7 @@ const
       // , depthTest: false
 
     }
-  , usualSpriteMaterial = new THREE.SpriteMaterial(
+  , suitcaseSpriteMaterial = new THREE.SpriteMaterial(
         Object.assign({}, spriteMaterialTemplate)
     )
   , firstTextSpriteMaterial = new THREE.SpriteMaterial({
@@ -90,7 +90,7 @@ const
       , blending: THREE.AdditiveBlending
       , depthTest: true
       , transparent: true
-      , opacity: config.usualSpriteOpacityBeginEnd
+      , opacity: config.suitcaseSpriteOpacityBeginEnd
       , fog: false
     })
 
@@ -128,7 +128,7 @@ let module; export default module = {
   , camera
   , captureui
 
-  , usualSpriteMaterial
+  , suitcaseSpriteMaterial
   , firstTextSpriteMaterial
   , sprites
   , earthMesh
@@ -183,7 +183,7 @@ let module; export default module = {
             const [ year, , delta ] = data[yearIndex]
 
             for (let j=0; j<delta; j++) {
-                let y, z, sprite = new THREE.Sprite(usualSpriteMaterial)
+                let y, z, sprite = new THREE.Sprite(suitcaseSpriteMaterial)
 
                 //// `i` up to 100
                 if (100 > i) {
@@ -212,18 +212,18 @@ let module; export default module = {
                     sprite.showAtFraction = 0
                 else if (2017 >= year)
                     sprite.showAtFraction =
-                        0.25 // pause for 25% of the duration
-                      + (yearIndex * 0.006) // when the year-text changes
+                        0.125 // pause for 12.5% of the duration
+                      + (yearIndex * 0.003) // when the year-text changes
                       + (
-                            (0.006 / delta) // fraction of the year
+                            (0.003 / delta) // fraction of the year
                           * j // each ‘million-icon’ appears one-by-one
                         )
                 else
                     sprite.showAtFraction =
-                        0.35 // pause a bit at 2017
-                      + (yearIndex * 0.006) // when the year-text changes
+                        0.175 // pause a bit at 2017
+                      + (yearIndex * 0.003) // when the year-text changes
                       + (
-                            (0.006 / delta) // fraction of the year
+                            (0.003 / delta) // fraction of the year
                           * j // each ‘million-icon’ appears one-by-one
                         )
                 sprite.year = year
