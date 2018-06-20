@@ -45,6 +45,9 @@ const
   , suitcaseSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('suitcase-sprite')
     )
+  , planeSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('plane-sprite')
+    )
   , firstTextSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('first-text-sprite')
     )
@@ -70,8 +73,7 @@ const
       , fog: false
     })
   , spriteMaterialTemplate = {
-        map: suitcaseSpriteTexture
-      , blending: THREE.AdditiveBlending
+        blending: THREE.AdditiveBlending
       , depthTest: true
       , transparent: true
       , opacity: config.suitcaseSpriteOpacityBeginEnd
@@ -83,7 +85,10 @@ const
 
     }
   , suitcaseSpriteMaterial = new THREE.SpriteMaterial(
-        Object.assign({}, spriteMaterialTemplate)
+        Object.assign({ map:suitcaseSpriteTexture }, spriteMaterialTemplate)
+    )
+  , planeSpriteMaterial = new THREE.SpriteMaterial(
+        Object.assign({ map:planeSpriteTexture }, spriteMaterialTemplate)
     )
   , firstTextSpriteMaterial = new THREE.SpriteMaterial({
         map: firstTextSpriteTexture
@@ -129,6 +134,7 @@ let module; export default module = {
   , captureui
 
   , suitcaseSpriteMaterial
+  , planeSpriteMaterial
   , firstTextSpriteMaterial
   , sprites
   , earthMesh
@@ -177,7 +183,7 @@ let module; export default module = {
         firstTextSprite.scale.set(50, 50, 50)
         scene.add(firstTextSprite)
 
-        ////
+        //// Add suitcase sprites.
         let i = 0 // `i` is the ‘million-icon’ index
         for (const yearIndex in data) {
             const [ year, , delta ] = data[yearIndex]
