@@ -7,7 +7,7 @@ const
         '//// DATA'
       , ''
       , 'let data; export default data = ['
-      , "    [ 'year', 'km (billions)', 'delta (billions)' ]"
+      , "    [ 'year', 'km (ten-billions)', 'delta (ten-billions)' ]"
     ]
 
 //// Parse the CSV file.
@@ -23,7 +23,7 @@ let prev = 0
 for (let year in data) {
     const tnkm = data[year]
     if (! tnkm) continue
-    const bnkm = tnkm * 1000 // convert trillions to billions
+    const bnkm = ~~(tnkm * 100) // convert trillions to ten-billions
     const delta = bnkm - prev
     prev = bnkm
     es6.push(`  , [ ${year}, ${bnkm}, ${delta} ]`)

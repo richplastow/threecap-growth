@@ -41,6 +41,12 @@ function restartForPreview (evt) {
         scene.renderer.setSize(previewWidth, previewHeight)
         scene.composer.setSize(previewWidth * pixelRatio, previewHeight * pixelRatio)
     }
+
+    //// Reset audio.
+    scene.$audio.pause()
+    scene.$audio.fastSeek(0)
+    state.audio = 'stopped'
+
     restart()
 }
 

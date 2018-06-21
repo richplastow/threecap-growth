@@ -6,7 +6,12 @@ import state from './state.js'
 
 const tweenDefs = [
 
-    { // camera position’s altitude
+
+
+
+    //// CAMERA
+
+    { // camera position’s altitude SUITCASE
         beginState: { alt:200 }//was 300
       , currState:  { }
       , endState:   { alt:350 }//was 600
@@ -15,9 +20,17 @@ const tweenDefs = [
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) {
+
+            //// Start the audio, if it’s not playing
+            if ('playing' !== state.audio) {
+                state.audio = 'playing'
+                scene.$audio.play(0)
+            }
+
             for (let i=0; i<scene.sprites.length; i++)
                 scene.sprites[i].visible = false
-            window.updateFirstText('')
+            window.updateFirstText('1950')
+            window.updateSecondText('1950')
             scene.firstTextSpriteMaterial.map.needsUpdate = true
             scene.earthMesh.rotation.y = config.earthStartRotationY
             scene.cloudMesh.rotation.y = config.earthStartRotationY
@@ -41,12 +54,12 @@ const tweenDefs = [
             state.cameraCurrent.position.alt = def.currState.alt
         } }
     }
-  , { // camera’s y-position
+  , { // camera’s y-position SUITCASE
         beginState: { y:-45 }//was 0
       , currState:  {}
       , endState:   { y:0 }//was 80
-      , beginFrac:  0.05 // fraction of whole duration, so `0`...
-      , endFrac:    0.5 // ...`1` fills the entire sequence
+      , beginFrac:  0.05
+      , endFrac:    0.5
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.InOut
       , onReset:    function (def) { }
@@ -63,12 +76,37 @@ const tweenDefs = [
             scene.camera.lookAt(0,y,0)
         } }
     }
-  , { // first-text-sprite’s opacity
+
+  , { // camera position’s altitude PLANE AND SHIP
+        beginState: { alt:350 }
+      , currState:  { }
+      , endState:   { alt:450 }
+      , beginFrac:  0.55
+      , endFrac:    0.85
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.InOut
+      , onReset:    function (def) { }
+      , onUpdate:   function (def) { return function () {
+            state.cameraCurrent.position.alt = def.currState.alt
+            setPositionUsingLla(
+                scene.camera
+              , state.cameraCurrent.position.lat
+              , state.cameraCurrent.position.lon
+              , state.cameraCurrent.position.alt
+            )
+        } }
+    }
+
+
+
+    //// TEXT
+
+  , { // first-text-sprite’s opacity BEGIN
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.025 // fraction of whole duration, so `0`...
-      , endFrac:    0.075 // ...`1` fills the entire sequence
+      , beginFrac:  0.025
+      , endFrac:    0.075
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
@@ -78,12 +116,59 @@ const tweenDefs = [
             scene.firstTextSpriteMaterial.opacity = def.currState.opacity
         } }
     }
-  , { // suitcase-sprite’s opacity
+  , { // first-text-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.525
+      , endFrac:    0.575
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {}
+      , onUpdate:   function (def) { return function () {
+            scene.firstTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // second-text-sprite’s opacity BEGIN
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.05 // fraction of whole duration, so `0`...
-      , endFrac:    0.1 // ...`1` fills the entire sequence
+      , beginFrac:  0.6
+      , endFrac:    0.65
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.secondTextSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.secondTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // second-text-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.9
+      , endFrac:    0.95
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {}
+      , onUpdate:   function (def) { return function () {
+            scene.secondTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+
+
+
+
+    //// ICONS
+
+  , { // suitcase-sprite’s opacity BEGIN
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.05
+      , endFrac:    0.1
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
@@ -93,6 +178,54 @@ const tweenDefs = [
             scene.suitcaseSpriteMaterial.opacity = def.currState.opacity
         } }
     }
+
+  , { // suitcase-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.53
+      , endFrac:    0.57
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) { }
+      , onUpdate:   function (def) { return function () {
+            scene.suitcaseSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+
+  , { // plane-sprite’s opacity BEGIN
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.625
+      , endFrac:    0.675
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.planeSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.planeSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+
+  , { // plane-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.905
+      , endFrac:    0.945
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) { }
+      , onUpdate:   function (def) { return function () {
+            scene.planeSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+
+
+
+
 ]
 
 

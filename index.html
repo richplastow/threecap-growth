@@ -141,10 +141,28 @@
       ctx.clearRect(0,0,1024,1024)
       ctx.fillText(text, 100, 300)
   }
+  }()</script>
 
-}()</script>
+  <!-- Draw the second text sprite -->
+  <canvas id="second-text-sprite" width="1024" height="1024"></canvas>
+  <script>!function(){
+  const ctx = document.getElementById('second-text-sprite').getContext('2d')
+  ctx.fillStyle = '#ffffff'
+  ctx.font = '300px museo_sans500'
+  window.updateSecondText = function (text) {
+      ctx.clearRect(0,0,1024,1024)
+      ctx.fillText(text, 100, 300)
+  }
+  }()</script>
 
 </div>
+
+
+
+
+<!-- AUDIO -->
+
+<audio src="audio/travel-number-statistics.mp3" controls></audio>
 
 
 

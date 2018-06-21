@@ -1,13 +1,17 @@
 //// SCENE
 
 import config from  './config.js'
-import data from '../data/total-international-tourist-arrivals.js'
+import suitcaseData from '../data/total-international-tourist-arrivals.js'
+import planeData from '../data/international-flight-passenger-km.js'
 import state from  './state.js'
 
 const
 
+    //// DOM Elements.
+    $audio = document.querySelector('audio')
+
     //// Objects for rendering.
-    clock = new THREE.Clock()
+  , clock = new THREE.Clock()
   , scene = new THREE.Scene()
   , camera = new THREE.PerspectiveCamera(
         35, config.previewWidth/config.previewHeight, 0.1, 2200)
@@ -50,6 +54,9 @@ const
     )
   , firstTextSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('first-text-sprite')
+    )
+  , secondTextSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('second-text-sprite')
     )
 
     //// Materials.
@@ -98,9 +105,18 @@ const
       , opacity: config.suitcaseSpriteOpacityBeginEnd
       , fog: false
     })
+  , secondTextSpriteMaterial = new THREE.SpriteMaterial({
+        map: secondTextSpriteTexture
+      , blending: THREE.AdditiveBlending
+      , depthTest: true
+      , transparent: true
+      , opacity: config.suitcaseSpriteOpacityBeginEnd
+      , fog: false
+    })
 
     //// Sprites.
   , firstTextSprite = new THREE.Sprite(firstTextSpriteMaterial)
+  , secondTextSprite = new THREE.Sprite(secondTextSpriteMaterial)
 
     //// Meshes.
   , earthMesh = new THREE.Mesh(earthGeometry, earthMaterial)
@@ -126,7 +142,9 @@ scene.fog = new THREE.Fog(0x002060, -100, 450) // RT: rgb(0, 90, 83)
 
 let module; export default module = {
 
-    copyPass
+    $audio
+
+  , copyPass
   , renderer
   , composer
   , clock
@@ -136,6 +154,7 @@ let module; export default module = {
   , suitcaseSpriteMaterial
   , planeSpriteMaterial
   , firstTextSpriteMaterial
+  , secondTextSpriteMaterial
   , sprites
   , earthMesh
   , cloudMesh
@@ -182,11 +201,14 @@ let module; export default module = {
         firstTextSprite.position.set(110, -77, -5)
         firstTextSprite.scale.set(50, 50, 50)
         scene.add(firstTextSprite)
+        secondTextSprite.position.set(110+150, -77+40, -5+30) // +150 = towards cam, +40 up a bit, +50 = leftwards
+        secondTextSprite.scale.set(50, 50, 50)
+        scene.add(secondTextSprite)
 
         //// Add suitcase sprites.
         let i = 0 // `i` is the ‘million-icon’ index
-        for (const yearIndex in data) {
-            const [ year, , delta ] = data[yearIndex]
+        for (const yearIndex in suitcaseData) {
+            const [ year, , delta ] = suitcaseData[yearIndex]
 
             for (let j=0; j<delta; j++) {
                 let y, z, sprite = new THREE.Sprite(suitcaseSpriteMaterial)
@@ -241,6 +263,56 @@ let module; export default module = {
                 i++
             }
         }
+
+        //// Add plane sprites.
+        i = 0 // `i` is the ten-billion-icon’ index
+        for (const yearIndex in planeData) {
+            const [ year, , delta ] = planeData[yearIndex]
+
+            for (let j=0; j<delta; j++) {
+                let y, z, sprite = new THREE.Sprite(planeSpriteMaterial)
+
+                //// `i` up to 100
+                if (100 > i) {
+                    z = (i % 10) * -7 // effectively x
+                    y = ~~(i / 10) * 7
+
+                //// Odd `i`, up to 500, greater than 100
+                } else if (500 > i && i % 2) {
+                    z = ~~(i / 20) * 7 - 28
+                    y = (i % 20) * 3.5 - 3.5
+
+                //// Even `i`, up to 500, greater than 100
+                } else if (500 > i) {
+                    z = ~~(i / 20) * -7 - 35
+                    y = (i % 20) * 3.5
+
+                //// `i` greater than 500
+                } else {
+                    z = (i % 50) * -7 + 140
+                    y = ~~(i / 50) * 7
+                }
+
+                sprite.position.set(110+150, y/2-52+40, z/2+14.5+30)
+
+                sprite.scale.set(3, 3, 3)
+                sprite.showAtFraction =
+                    0.6
+                  + (yearIndex * 0.003) // when the year-text changes
+                  + (
+                        (0.003 / delta) // fraction of the year
+                      * j // each ‘million-icon’ appears one-by-one
+                    )
+                sprite.year = year
+                sprite.visible = false
+                sprites.push(sprite)
+                scene.add(sprite)
+
+                //// Increment the ten-billion-icon’ index
+                i++
+            }
+        }
+
     }
 
   , render () {
@@ -258,11 +330,25 @@ let module; export default module = {
             const sprite = sprites[i]
             if (nowFraction > sprite.showAtFraction && ! sprite.visible) {
                 sprite.visible = true
-                if (state.firstText !== sprite.year) {
-                    state.firstText = sprite.year
-                    window.updateFirstText(sprite.year)
-                    firstTextSpriteMaterial.map.needsUpdate = true
+
+                //// Update first text.
+                if (0.6 > nowFraction) {
+                    if (state.firstText !== sprite.year) {
+                        state.firstText = sprite.year
+                        window.updateFirstText(sprite.year)
+                        firstTextSpriteMaterial.map.needsUpdate = true
+                    }
                 }
+
+                //// Update second and third texts.
+                else {
+                    if (state.secondText !== sprite.year) {
+                        state.secondText = sprite.year
+                        window.updateSecondText(sprite.year)
+                        secondTextSpriteMaterial.map.needsUpdate = true
+                    }
+                }
+
             }
         }
 

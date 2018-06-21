@@ -16,4 +16,5 @@ let module; export default module = {
     }
   , firstText: null
   , secondText: null
+  , audio: 'stopped'
 }
