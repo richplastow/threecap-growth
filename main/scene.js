@@ -3,6 +3,7 @@
 import config from  './config.js'
 import suitcaseData from '../data/total-international-tourist-arrivals.js'
 import planeData from '../data/international-flight-passenger-km.js'
+import shipData from '../data/international-cruise-passengers.js'
 import state from  './state.js'
 
 const
@@ -33,18 +34,18 @@ const
   , directionalLight = new THREE.DirectionalLight(0xcccc99, 0.5)
 
     //// Textures - for fast development:
-  , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
-  , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
-  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
-  , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
-  , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
+  // , earthMap = THREE.ImageUtils.loadTexture('images/512_earth_daymap.jpg')
+  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/512_earth_normal_map.png')
+  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/512_earth_specular_map.png')
+  // , cloudMap = THREE.ImageUtils.loadTexture('images/1024_earth_clouds.jpg')
+  // , starMap = THREE.ImageUtils.loadTexture('images/1024_stars_milky_way.jpg')
 
     //// Textures - for final render with a fast GPU:
-  // , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
-  // , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
-  // , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
-  // , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
-  // , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
+  , earthMap = THREE.ImageUtils.loadTexture('images/2048_earth_daymap.jpg')
+  , earthBumpMap = THREE.ImageUtils.loadTexture('images/1024_earth_normal_map.png')
+  , earthSpecularMap = THREE.ImageUtils.loadTexture('images/1024_earth_specular_map.png')
+  , cloudMap = THREE.ImageUtils.loadTexture('images/2048_earth_clouds.jpg')
+  , starMap = THREE.ImageUtils.loadTexture('images/4096_stars_milky_way.jpg')
 
   , suitcaseSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('suitcase-sprite')
@@ -52,10 +53,16 @@ const
   , planeSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('plane-sprite')
     )
+  , shipSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('ship-sprite')
+    )
   , firstTextSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('first-text-sprite')
     )
   , secondTextSpriteTexture = new THREE.CanvasTexture(
+        document.getElementById('second-text-sprite')
+    )
+  , thirdTextSpriteTexture = new THREE.CanvasTexture(
         document.getElementById('second-text-sprite')
     )
 
@@ -97,6 +104,9 @@ const
   , planeSpriteMaterial = new THREE.SpriteMaterial(
         Object.assign({ map:planeSpriteTexture }, spriteMaterialTemplate)
     )
+  , shipSpriteMaterial = new THREE.SpriteMaterial(
+        Object.assign({ map:shipSpriteTexture }, spriteMaterialTemplate)
+    )
   , firstTextSpriteMaterial = new THREE.SpriteMaterial({
         map: firstTextSpriteTexture
       , blending: THREE.AdditiveBlending
@@ -113,10 +123,19 @@ const
       , opacity: config.suitcaseSpriteOpacityBeginEnd
       , fog: false
     })
+  , thirdTextSpriteMaterial = new THREE.SpriteMaterial({
+        map: secondTextSpriteTexture // second, not third - they show same number!
+      , blending: THREE.AdditiveBlending
+      , depthTest: true
+      , transparent: true
+      , opacity: config.suitcaseSpriteOpacityBeginEnd
+      , fog: false
+    })
 
     //// Sprites.
   , firstTextSprite = new THREE.Sprite(firstTextSpriteMaterial)
   , secondTextSprite = new THREE.Sprite(secondTextSpriteMaterial)
+  , thirdTextSprite = new THREE.Sprite(thirdTextSpriteMaterial)
 
     //// Meshes.
   , earthMesh = new THREE.Mesh(earthGeometry, earthMaterial)
@@ -136,7 +155,7 @@ const
   , captureui = new THREEcapUI(capture)
 
 
-scene.fog = new THREE.Fog(0x002060, -100, 450) // RT: rgb(0, 90, 83)
+scene.fog = new THREE.Fog(0x002060, -100, 650) // RT: rgb(0, 90, 83)
 
 
 
@@ -153,8 +172,10 @@ let module; export default module = {
 
   , suitcaseSpriteMaterial
   , planeSpriteMaterial
+  , shipSpriteMaterial
   , firstTextSpriteMaterial
   , secondTextSpriteMaterial
+  , thirdTextSpriteMaterial
   , sprites
   , earthMesh
   , cloudMesh
@@ -201,9 +222,12 @@ let module; export default module = {
         firstTextSprite.position.set(110, -77, -5)
         firstTextSprite.scale.set(50, 50, 50)
         scene.add(firstTextSprite)
-        secondTextSprite.position.set(110+150, -77+40, -5+30) // +150 = towards cam, +40 up a bit, +50 = leftwards
+        secondTextSprite.position.set(110+140, -77+65, -5+30) // +140 = towards cam, +65 up a lot, +30 = leftwards
         secondTextSprite.scale.set(50, 50, 50)
         scene.add(secondTextSprite)
+        thirdTextSprite.position.set(110+200, -77+15, -5-35) // +200 = towards cam, +20 up a bit, -30 = rightwards
+        thirdTextSprite.scale.set(50, 50, 50)
+        scene.add(thirdTextSprite)
 
         //// Add suitcase sprites.
         let i = 0 // `i` is the ‘million-icon’ index
@@ -293,7 +317,56 @@ let module; export default module = {
                     y = ~~(i / 50) * 7
                 }
 
-                sprite.position.set(110+150, y/2-52+40, z/2+14.5+30)
+                sprite.position.set(110+140, y/2-52+65, z/2+14.5+30)
+
+                sprite.scale.set(3, 3, 3)
+                sprite.showAtFraction =
+                    0.6
+                  + (yearIndex * 0.003) // when the year-text changes
+                  + (
+                        (0.003 / delta) // fraction of the year
+                      * j // each ‘million-icon’ appears one-by-one
+                    )
+                sprite.year = year
+                sprite.visible = false
+                sprites.push(sprite)
+                scene.add(sprite)
+
+                //// Increment the ten-billion-icon’ index
+                i++
+            }
+        }
+
+        //// Add ship sprites.
+        i = 0 // `i` is the hundred-thousand-icon’ index
+        for (const yearIndex in shipData) {
+            const [ year, , delta ] = shipData[yearIndex]
+
+            for (let j=0; j<delta; j++) {
+                let y, z, sprite = new THREE.Sprite(shipSpriteMaterial)
+
+                //// `i` up to 100
+                if (100 > i) {
+                    z = (i % 10) * -7 // effectively x
+                    y = ~~(i / 10) * 7
+
+                //// Odd `i`, up to 500, greater than 100
+                } else if (500 > i && i % 2) {
+                    z = ~~(i / 20) * 7 - 28
+                    y = (i % 20) * 3.5 - 3.5
+
+                //// Even `i`, up to 500, greater than 100
+                } else if (500 > i) {
+                    z = ~~(i / 20) * -7 - 35
+                    y = (i % 20) * 3.5
+
+                //// `i` greater than 500
+                } else {
+                    z = (i % 50) * -7 + 140
+                    y = ~~(i / 50) * 7
+                }
+
+                sprite.position.set(110+200, y/2-52+15, z/2+14.5-35)
 
                 sprite.scale.set(3, 3, 3)
                 sprite.showAtFraction =
@@ -332,7 +405,7 @@ let module; export default module = {
                 sprite.visible = true
 
                 //// Update first text.
-                if (0.6 > nowFraction) {
+                if (0.575 > nowFraction) {
                     if (state.firstText !== sprite.year) {
                         state.firstText = sprite.year
                         window.updateFirstText(sprite.year)
@@ -343,8 +416,9 @@ let module; export default module = {
                 //// Update second and third texts.
                 else {
                     if (state.secondText !== sprite.year) {
-                        state.secondText = sprite.year
-                        window.updateSecondText(sprite.year)
+                        const yr = 1950 > sprite.year ? 1950 : sprite.year
+                        state.secondText = yr
+                        window.updateSecondText(yr)
                         secondTextSpriteMaterial.map.needsUpdate = true
                     }
                 }

@@ -18,7 +18,7 @@ canvas#three-scene { width:854px; height:480px; } /* becomes 1920x1080 during ca
 #recordpanel div:last-of-type { position:relative; opacity:1; height:auto; z-index:999 }
 audio { position:fixed; bottom:0; }
 
-#sprite-wrap canvas#ship-sprite {
+/* #sprite-wrap canvas#ship-sprite {
     width: 256px;
     height: 256px;
-}
+} */

@@ -80,7 +80,7 @@ const tweenDefs = [
   , { // camera position’s altitude PLANE AND SHIP
         beginState: { alt:350 }
       , currState:  { }
-      , endState:   { alt:450 }
+      , endState:   { alt:490 }
       , beginFrac:  0.55
       , endFrac:    0.85
       , tween:      null
@@ -133,8 +133,8 @@ const tweenDefs = [
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.6
-      , endFrac:    0.65
+      , beginFrac:  0.575
+      , endFrac:    0.625
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
@@ -155,6 +155,34 @@ const tweenDefs = [
       , onReset:    function (def) {}
       , onUpdate:   function (def) { return function () {
             scene.secondTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // third-text-sprite’s opacity BEGIN
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.65
+      , endFrac:    0.7
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.thirdTextSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.thirdTextSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // third-text-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.9
+      , endFrac:    0.95
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {}
+      , onUpdate:   function (def) { return function () {
+            scene.thirdTextSpriteMaterial.opacity = def.currState.opacity
         } }
     }
 
@@ -197,8 +225,8 @@ const tweenDefs = [
         beginState: { opacity:0 }
       , currState:  {}
       , endState:   { opacity:1 }
-      , beginFrac:  0.625
-      , endFrac:    0.675
+      , beginFrac:  0.58
+      , endFrac:    0.62
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) {
@@ -208,18 +236,46 @@ const tweenDefs = [
             scene.planeSpriteMaterial.opacity = def.currState.opacity
         } }
     }
-
   , { // plane-sprite’s opacity END
         beginState: { opacity:1 }
       , currState:  {}
       , endState:   { opacity:0 }
-      , beginFrac:  0.905
-      , endFrac:    0.945
+      , beginFrac:  0.900
+      , endFrac:    0.940
       , tween:      null
       , easing:     TWEEN.Easing.Cubic.Out
       , onReset:    function (def) { }
       , onUpdate:   function (def) { return function () {
             scene.planeSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+
+  , { // ship-sprite’s opacity BEGIN
+        beginState: { opacity:0 }
+      , currState:  {}
+      , endState:   { opacity:1 }
+      , beginFrac:  0.625
+      , endFrac:    0.675
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) {
+            scene.shipSpriteMaterial.opacity = 0
+        }
+      , onUpdate:   function (def) { return function () {
+            scene.shipSpriteMaterial.opacity = def.currState.opacity
+        } }
+    }
+  , { // ship-sprite’s opacity END
+        beginState: { opacity:1 }
+      , currState:  {}
+      , endState:   { opacity:0 }
+      , beginFrac:  0.915
+      , endFrac:    0.955
+      , tween:      null
+      , easing:     TWEEN.Easing.Cubic.Out
+      , onReset:    function (def) { }
+      , onUpdate:   function (def) { return function () {
+            scene.shipSpriteMaterial.opacity = def.currState.opacity
         } }
     }
 
